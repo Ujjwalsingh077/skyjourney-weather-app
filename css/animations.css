@@ -1,0 +1,109 @@
+@keyframes shimmer {
+  0% {
+    background-position: -360px 0;
+  }
+
+  100% {
+    background-position: 360px 0;
+  }
+}
+
+.reveal {
+  animation: rise-in 480ms ease both;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sun-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(10px);
+  }
+}
+
+@keyframes sun-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: translate(27px, -27px) scale(0.92);
+  }
+
+  50% {
+    opacity: 0.58;
+    transform: translate(27px, -27px) scale(1.05);
+  }
+}
+
+@keyframes rain-fall {
+  to {
+    transform: translate3d(-48px, 620px, 0);
+  }
+}
+
+@keyframes lightning {
+  0%,
+  92%,
+  96%,
+  100% {
+    opacity: 0;
+  }
+
+  93%,
+  95% {
+    opacity: 0.36;
+  }
+}
+
+@keyframes snow-fall {
+  to {
+    transform: translate3d(48px, 520px, 0);
+  }
+}
+
+@keyframes clouds-drift {
+  to {
+    transform: translateX(160vw);
+  }
+}
+
+.btn,
+.icon-btn,
+.text-btn,
+.chip {
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.btn:hover,
+.icon-btn:hover,
+.text-btn:hover,
+.chip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(56, 189, 248, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
