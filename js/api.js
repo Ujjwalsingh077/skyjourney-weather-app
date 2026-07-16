@@ -1,5 +1,5 @@
 const BASE_URL = "https://api.openweathermap.org";
-const OPENWEATHER_API_KEY = "491d0a156937a387ff4d4311d906313b";
+const OPENWEATHER_API_KEY = "";
 
 const demoCity = {
   name: "Bengaluru",
