@@ -254,7 +254,79 @@ export function calculateTravelRisk(current, air) {
     recommendations: ["Current conditions are suitable for travel."]
   };
 }
+function clothingAdvice(temp){
 
+if(temp>=35){
+return [
+"Light Cotton T-Shirt",
+"Shorts",
+"Cap",
+"Sunglasses"
+];
+}
+
+if(temp>=20){
+return [
+"T-Shirt",
+"Jeans",
+"Sneakers"
+];
+}
+
+if(temp>=10){
+return [
+"Light Jacket",
+"Full Pants",
+"Shoes"
+];
+}
+
+return[
+"Winter Jacket",
+"Gloves",
+"Boots",
+"Wool Cap"
+];
+
+}
+function healthAdvice(air,temp){
+
+const tips=[];
+
+if(air?.aqi>=4)
+tips.push("Wear a mask outdoors.");
+
+if(temp>=35)
+tips.push("Drink plenty of water.");
+
+if(temp<=5)
+tips.push("Wear thermal clothing.");
+
+tips.push("Carry sunscreen.");
+
+return tips;
+
+}
+function generateSummary(destination,current,risk){
+
+return `
+
+Weather in ${destination} is currently
+${current.description}
+with a temperature of
+${Math.round(current.temp)}°C.
+
+Travel Risk is ${risk.level}.
+
+${
+risk.level==="Low"
+?"Outdoor activities are recommended."
+:"Travel carefully and keep checking weather updates."
+}
+
+`;
+
+}
 /**
  * Generates travel recommendations from forecast, current conditions, and air metrics.
  * @param {{destination: string, date: string, current: object, forecast: object[], air: object}} input
@@ -270,6 +342,13 @@ export function planTrip({ destination, date, current, forecast, air }) {
     : temp <= 5
       ? "Low temperatures expected. Prioritize warm layers."
       : "No severe temperature warning for the selected date.";
+      const risk = calculateTravelRisk(current, air);
+
+const clothes = clothingAdvice(temp);
+
+const health = healthAdvice(air, temp);
+
+const summary = generateSummary(destination, current, risk);
 
   return {
     ...rule,
@@ -277,6 +356,9 @@ export function planTrip({ destination, date, current, forecast, air }) {
     warning,
     score: calculateTravelScore({ ...current, ...closest }, air),
     bestTime: getBestDepartureWindow(date, forecast),
-    risk: calculateTravelRisk(current, air)
+    risk,
+  clothes,
+  health,
+  summary
   };
 }

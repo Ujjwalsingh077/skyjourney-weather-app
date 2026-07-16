@@ -165,18 +165,68 @@ export function renderCityLists(favorites, recents, onSelect) {
  */
 export function renderPlannerResult(result) {
   document.querySelector("#planner-output").innerHTML = `
-    <span class="status-pill status-${result.status}">${result.status.toUpperCase()}</span>
-    <div class="advice-card">
-      <h3>${result.title}</h3>
-      <p>${result.advice}</p>
+    <div class="travel-score-card">
+      <h3>🌍 Travel Score</h3>
+      <div class="travel-score-value">${result.score.score}/100</div>
+      <div class="travel-score-label">${result.score.category.label}</div>
+      <div class="travel-stars">
+        ${"⭐".repeat(result.score.stars)}
+      </div>
+      <small>${result.score.reasons.join(" • ")}</small>
     </div>
+
     <div class="advice-card">
-      <h3>Weather Warning</h3>
+      <h3>🚦 Travel Risk</h3>
+      <p><strong>${result.risk.level}</strong> (${result.risk.value}%)</p>
+      <p>${result.risk.title}</p>
+      <ul>
+        ${result.risk.reasons.map(r => `<li>${r}</li>`).join("")}
+      </ul>
+    </div>
+
+    <div class="advice-card">
+      <h3>🕒 Best Time to Travel</h3>
+      <p>
+        ${
+          result.bestTime.ideal
+            ? `${result.bestTime.label} at ${result.bestTime.time}`
+            : result.bestTime.label
+        }
+      </p>
+      <ul>
+        ${result.bestTime.reasons.map(r => `<li>${r}</li>`).join("")}
+      </ul>
+    </div>
+
+    <div class="advice-card">
+      <h3>👕 Clothing Recommendation</h3>
+      <ul>
+        ${result.clothes.map(item => `<li>${item}</li>`).join("")}
+      </ul>
+    </div>
+
+    <div class="advice-card">
+      <h3>❤️ Health Advice</h3>
+      <ul>
+        ${result.health.map(item => `<li>${item}</li>`).join("")}
+      </ul>
+    </div>
+
+    <div class="advice-card">
+      <h3>🎒 Packing Checklist</h3>
+      <ul>
+        ${result.packing.map(item => `<li>${item}</li>`).join("")}
+      </ul>
+    </div>
+
+    <div class="advice-card">
+      <h3>⚠ Weather Warning</h3>
       <p>${result.warning}</p>
     </div>
+
     <div class="advice-card">
-      <h3>Packing Suggestions</h3>
-      <ul>${result.packing.map((item) => `<li>${item}</li>`).join("")}</ul>
+      <h3>🤖 AI Travel Summary</h3>
+      <p>${result.summary}</p>
     </div>
   `;
 }

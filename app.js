@@ -20,8 +20,9 @@ import {
 } from "./js/ui.js";
 
 const state = {
-  current: null,
-  forecast: []
+    current: null,
+    forecast: [],
+    air: null
 };
 
 const elements = {
@@ -31,6 +32,8 @@ const elements = {
   plannerForm: document.querySelector("#planner-form"),
   destinationInput: document.querySelector("#destination-input"),
   travelDateInput: document.querySelector("#travel-date-input"),
+  tripType: document.querySelector("#trip-type"),
+  tripDuration: document.querySelector("#trip-duration"),
   addFavoriteBtn: document.querySelector("#add-favorite-btn"),
   clearRecentsBtn: document.querySelector("#clear-recents-btn"),
   themeToggle: document.querySelector("#theme-toggle")
@@ -71,6 +74,7 @@ async function loadWeather(currentResult) {
   state.forecast = forecastResult.data;
   renderForecasts(state.forecast);
   renderAirQuality(airResult.data, current);
+  state.air = airResult.data;
   renderMap(current.city);
 
   if (isDemo || forecastResult.isDemo || airResult.isDemo) {
@@ -143,11 +147,30 @@ function bindEvents() {
     const result = planTrip({
       destination: elements.destinationInput.value.trim() || state.current.city.name,
       date: elements.travelDateInput.value,
+       tripType: elements.tripType.value,
+       tripDuration: Number(elements.tripDuration.value),
       current: state.current,
       forecast: state.forecast
+      ,air: state.air
     });
     renderPlannerResult(result);
   });
+
+  elements.tripDuration.addEventListener("change", () => {
+  if (!state.current) return;
+
+  const result = planTrip({
+    destination: elements.destinationInput.value,
+    date: elements.travelDateInput.value,
+    tripType: elements.tripType.value,
+    tripDuration: Number(elements.tripDuration.value),
+    current: state.current,
+    forecast: state.forecast
+    ,air: state.air
+  });
+
+  renderPlannerResult(result);
+});
 
 }
 

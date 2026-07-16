@@ -1,155 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="SkyJourney is a smart weather dashboard and travel planner with forecasts, air quality, maps, and packing advice."
-    />
-    <title>SkyJourney | Smart Weather & Travel Planner</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIINfQyq8Ck1U8A8KxP7UU2SxyuK4h9vYwM="
-      crossorigin=""
-    />
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="css/weather.css" />
-    <link rel="stylesheet" href="css/forecast.css" />
-    <link rel="stylesheet" href="css/planner.css" />
-    <link rel="stylesheet" href="css/animations.css" />
-    <link rel="stylesheet" href="css/responsive.css" />
-    <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-      crossorigin=""
-      defer
-    ></script>
-    <script type="module" src="app.js"></script>
-  </head>
-  <body>
-    <div class="app-shell">
-      <header class="site-header">
-        <a class="brand" href="#" aria-label="SkyJourney home">
-          <span class="brand-mark" aria-hidden="true">SJ</span>
-          <span>
-            <strong>SkyJourney</strong>
-            <small>Weather & Travel Planner</small>
-          </span>
-        </a>
 
-        <form class="search-form" id="search-form" role="search">
-          <label class="sr-only" for="city-input">Search city</label>
-          <input
-            id="city-input"
-            type="search"
-            autocomplete="address-level2"
-            placeholder="Search city, e.g. Tokyo"
-            aria-label="Search a city"
-          />
-          <button class="btn btn-primary" type="submit">Search</button>
-        </form>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="SkyJourney is a smart weather dashboard and travel planner with forecasts, air quality, maps, and packing advice." />
+  <title>SkyJourney | Smart Weather & Travel Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="css/weather.css" />
+  <link rel="stylesheet" href="css/forecast.css" />
+  <link rel="stylesheet" href="css/planner.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <script type="module" src="app.js"></script>
+</head>
 
-        <div class="header-actions">
-          <button class="icon-btn" id="location-btn" type="button" aria-label="Use current location">
-            <span aria-hidden="true">⌖</span>
-          </button>
-          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">
-            <span aria-hidden="true"></span>
-          </button>
-        </div>
-      </header>
+<body>
+  <div class="app-shell">
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="SkyJourney home">
+        <img src="assets/logo/weather-app.png" alt="SkyJourney logo" class="logo">
+        <span>
+          <strong>SkyJourney</strong>
+          <small>Weather & Travel Planner</small>
+        </span>
+      </a>
+      <form class="search-form" id="search-form" role="search">
+        <label class="sr-only" for="city-input">Search city</label>
+        <input id="city-input" type="search" autocomplete="address-level2" placeholder="Search city, e.g. Tokyo"
+          aria-label="Search a city" />
+        <button class="btn btn-primary" type="submit">Search</button>
+      </form>
 
-      <main>
-        <section class="hero-grid" aria-label="Weather overview">
-          <article class="current-weather card reveal" id="current-weather" aria-live="polite">
-            <div class="skeleton-block"></div>
-          </article>
+      <div class="header-actions">
+        <button class="icon-btn" id="location-btn" type="button" aria-label="Use current location">
+          <span aria-hidden="true">⌖</span>
+        </button>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle theme">
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+    </header>
 
-          <aside class="trip-card card reveal">
-            <div class="section-heading">
-              <span>Travel Planner</span>
-              <strong id="planner-date-label">Today</strong>
-            </div>
-            <form class="planner-form" id="planner-form">
-              <label>
-                Destination
-                <input id="destination-input" type="text" placeholder="Where are you headed?" required />
-              </label>
-              <label>
-                Travel Date
-                <input id="travel-date-input" type="date" required />
-              </label>
-              <button class="btn btn-secondary" type="submit">Plan My Trip</button>
-            </form>
-            <div class="planner-output" id="planner-output" aria-live="polite"></div>
-          </aside>
-        </section>
+    <main>
+      <section class="hero-grid" aria-label="Weather overview">
+        <article class="current-weather card reveal" id="current-weather" aria-live="polite">
+          <div class="skeleton-block"></div>
+        </article>
 
-        <section class="dashboard-grid">
-          <article class="panel reveal">
-            <div class="section-heading">
-              <span>Hourly Forecast</span>
-              <strong id="hourly-summary">Next 24 hours</strong>
-            </div>
-            <div class="hourly-strip" id="hourly-forecast" aria-label="Hourly forecast"></div>
-          </article>
+        <aside class="trip-card card reveal">
+          <div class="section-heading">
+            <span>Travel Planner</span>
+            <strong id="planner-date-label">Today</strong>
+          </div>
+          <form class="planner-form" id="planner-form">
+            <label>
+              Trip Type
+              <select id="trip-type">
+                <option>Vacation</option>
+                <option>Business</option>
+                <option>Road Trip</option>
+                <option>Adventure</option>
+                <option>Camping</option>
+              </select>
+            </label>
 
-          <article class="panel reveal">
-            <div class="section-heading">
-              <span>5 Day Forecast</span>
-              <strong>Daily outlook</strong>
-            </div>
-            <div class="daily-grid" id="daily-forecast"></div>
-          </article>
+            <label>
+              Trip Duration
+              <select id="trip-duration">
+                <option value="1">1 Day</option>
+                <option value="2">Weekend</option>
+                <option value="7">1 Week</option>
+              </select>
+            </label>
+            <label>
+              Destination
+              <input id="destination-input" type="text" placeholder="Where are you headed?" required />
+            </label>
+            <label>
+              Travel Date
+              <input id="travel-date-input" type="date" required />
+            </label>
+            <button class="btn btn-secondary" type="submit">Plan My Trip</button>
+          </form>
+          <div class="planner-output" id="planner-output" aria-live="polite"></div>
+        </aside>
+      </section>
 
-          <article class="panel reveal">
-            <div class="section-heading">
-              <span>Air & Conditions</span>
-              <strong id="aqi-label">AQI</strong>
-            </div>
-            <div class="condition-grid" id="air-quality"></div>
-          </article>
+      <section class="dashboard-grid">
+        <article class="panel reveal">
+          <div class="section-heading">
+            <span>Hourly Forecast</span>
+            <strong id="hourly-summary">Next 24 hours</strong>
+          </div>
+          <div class="hourly-strip" id="hourly-forecast" aria-label="Hourly forecast"></div>
+        </article>
 
-          <article class="panel reveal map-panel">
-            <div class="section-heading">
-              <span>City Map</span>
-              <strong id="map-label">Leaflet</strong>
-            </div>
-            <div id="weather-map" class="weather-map" aria-label="Selected city map"></div>
-          </article>
+        <article class="panel reveal">
+          <div class="section-heading">
+            <span>5 Day Forecast</span>
+            <strong>Daily outlook</strong>
+          </div>
+          <div class="daily-grid" id="daily-forecast"></div>
+        </article>
 
-          <article class="panel reveal">
-            <div class="section-heading">
-              <span>Favorites</span>
-              <button class="text-btn" id="add-favorite-btn" type="button">Add current</button>
-            </div>
-            <div class="chip-list" id="favorite-cities"></div>
-          </article>
+        <article class="panel reveal">
+          <div class="section-heading">
+            <span>Air & Conditions</span>
+            <strong id="aqi-label">AQI</strong>
+          </div>
+          <div class="condition-grid" id="air-quality"></div>
+        </article>
 
-          <article class="panel reveal">
-            <div class="section-heading">
-              <span>Recent Searches</span>
-              <button class="text-btn" id="clear-recents-btn" type="button">Clear</button>
-            </div>
-            <div class="chip-list" id="recent-searches"></div>
-          </article>
-        </section>
-      </main>
+        <article class="panel reveal map-panel">
+          <div class="section-heading">
+            <span>City Map</span>
+            <strong id="map-label">Leaflet</strong>
+          </div>
+          <div id="weather-map" class="weather-map" aria-label="Selected city map"></div>
+        </article>
 
-      <footer class="site-footer">
-        <p>SkyJourney combines weather, forecasts, maps, and travel advice in one lightweight dashboard.</p>
-        <span>Built with ❤️ by UJJWAL SINGH.</span>
-      </footer>
-    </div>
+        <article class="panel reveal">
+          <div class="section-heading">
+            <span>Favorites</span>
+            <button class="text-btn" id="add-favorite-btn" type="button">Add current</button>
+          </div>
+          <div class="chip-list" id="favorite-cities"></div>
+        </article>
 
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  </body>
+        <article class="panel reveal">
+          <div class="section-heading">
+            <span>Recent Searches</span>
+            <button class="text-btn" id="clear-recents-btn" type="button">Clear</button>
+          </div>
+          <div class="chip-list" id="recent-searches"></div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>SkyJourney combines weather, forecasts, maps, and travel advice in one lightweight dashboard.</p>
+      <span>Built with ❤️ by UJJWAL SINGH.</span>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+
 </html>
