@@ -1,0 +1,5 @@
+.is-loading { position: relative; overflow: hidden; pointer-events: none; }
+.is-loading::after { position: absolute; inset: 0; content: ""; background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.16) 48%, transparent 65%); transform: translateX(-100%); animation: loading-sheen 1.35s infinite; }
+@keyframes loading-sheen { to { transform: translateX(100%); } }
+.weather-map:empty { background: linear-gradient(110deg, var(--surface), var(--surface-strong), var(--surface)); background-size: 200% 100%; animation: map-skeleton 1.4s infinite; }
+@keyframes map-skeleton { to { background-position: -200% 0; } }

@@ -1,0 +1,70 @@
+/* Full-page weather atmosphere, derived from the rendered card's weather class. */
+body.weather-scene-clear { background: radial-gradient(circle at 78% 12%, rgba(250,204,21,.25), transparent 24rem), radial-gradient(ellipse at 18% 8%, rgba(46,236,205,.25), transparent 35rem), linear-gradient(145deg, #0b3d75, var(--bg)); }
+body.weather-scene-clouds { background: radial-gradient(ellipse at 85% 7%, rgba(153,75,255,.26), transparent 36rem), linear-gradient(145deg, #1b3157, var(--bg)); }
+body.weather-scene-rain, body.weather-scene-storm { background: radial-gradient(ellipse at 13% 7%, rgba(45,212,191,.18), transparent 32rem), linear-gradient(145deg, #111c35, #223b60 55%, var(--bg)); }
+body.weather-scene-snow { background: radial-gradient(circle at 20% 10%, rgba(224,242,254,.25), transparent 28rem), radial-gradient(ellipse at 85% 7%, rgba(153,75,255,.2), transparent 36rem), linear-gradient(145deg, #36506d, var(--bg)); }
+body.weather-scene-night { background: radial-gradient(circle at 78% 12%, rgba(196,181,253,.16), transparent 19rem), radial-gradient(ellipse at 18% 8%, rgba(46,236,205,.13), transparent 35rem), linear-gradient(145deg, #080d27, var(--bg)); }
+.weather-scene-stars { position: fixed; z-index: 0; inset: 0; overflow: hidden; pointer-events: none; opacity: .6; }
+.weather-scene-stars i { position: absolute; width: 3px; height: 3px; border-radius: 99px; background: white; box-shadow: 0 0 10px white; animation: star-twinkle 2.5s ease-in-out infinite alternate; }
+@keyframes star-twinkle { to { opacity: .15; transform: scale(.55); } }
+
+/* Moving sky: layered, cloud-like vapor banks with independent parallax motion. */
+.sky-cloud-layer, .aurora-lights { position: fixed; z-index: 0; inset: 0; overflow: hidden; pointer-events: none; }
+.sky-cloud-layer { opacity: .48; }
+.sky-cloud-layer i { position: absolute; display: block; width: 42rem; height: 13rem; border-radius: 50%; background: radial-gradient(ellipse at 17% 72%, rgba(225,240,255,.46) 0 8%, transparent 20%), radial-gradient(ellipse at 34% 43%, rgba(230,242,255,.38) 0 15%, transparent 31%), radial-gradient(ellipse at 56% 62%, rgba(214,233,255,.42) 0 18%, transparent 37%), radial-gradient(ellipse at 79% 45%, rgba(225,240,255,.34) 0 14%, transparent 32%); filter: blur(10px); animation: cloud-bank-drift 65s linear infinite; }
+.sky-cloud-layer i:nth-child(1) { top: 10%; left: -34rem; transform: scale(1.2); opacity: .48; animation-duration: 78s; }
+.sky-cloud-layer i:nth-child(2) { top: 30%; left: -43rem; opacity: .3; transform: scale(.86); animation-duration: 56s; animation-delay: -24s; }
+.sky-cloud-layer i:nth-child(3) { top: 66%; left: -35rem; opacity: .34; transform: scale(1.05); animation-duration: 72s; animation-delay: -44s; }
+.sky-cloud-layer i:nth-child(4) { top: 49%; left: -50rem; opacity: .22; transform: scale(.7); animation-duration: 47s; animation-delay: -19s; }
+@keyframes cloud-bank-drift { to { translate: 155vw 0; } }
+
+/* Full-page rainfall is enabled only for live rain and thunderstorm conditions. */
+.sky-rain-layer { position: fixed; z-index: 0; inset: 0; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; }
+.sky-rain-layer i { position: absolute; top: -16vh; left: calc(var(--rain-x) * 1%); display: block; width: 2px; height: 3.6rem; border-radius: 999px; background: linear-gradient(to bottom, transparent, rgba(206,240,255,.72)); transform: rotate(13deg); filter: drop-shadow(0 0 3px rgba(147,197,253,.32)); animation: background-rain var(--rain-speed) linear var(--rain-delay) infinite; }
+body.weather-scene-rain .sky-rain-layer, body.weather-scene-storm .sky-rain-layer { opacity: .75; }
+body.weather-scene-storm .sky-rain-layer { opacity: .9; }
+@keyframes background-rain { to { transform: translate3d(-12vw, 125vh, 0) rotate(13deg); } }
+
+/* Soft aurora curtains sweep independently behind the cloud banks. */
+.aurora-lights { mix-blend-mode: screen; opacity: .65; filter: blur(24px); }
+.aurora-lights i { position: absolute; top: -18%; width: 34vw; min-width: 25rem; height: 130%; display: block; border-radius: 50%; background: linear-gradient(90deg, transparent 8%, rgba(31,255,204,.05) 28%, rgba(31,255,204,.58) 48%, rgba(72,149,255,.14) 69%, transparent 91%); transform: rotate(20deg); animation: aurora-wave 15s ease-in-out infinite alternate; }
+.aurora-lights i:nth-child(1) { left: 6%; animation-duration: 17s; }
+.aurora-lights i:nth-child(2) { left: 38%; background: linear-gradient(90deg, transparent 10%, rgba(57,188,255,.08) 27%, rgba(129,95,255,.46) 49%, rgba(228,81,255,.1) 69%, transparent 90%); animation-delay: -8s; animation-duration: 21s; }
+.aurora-lights i:nth-child(3) { left: 68%; background: linear-gradient(90deg, transparent 12%, rgba(95,255,208,.06) 30%, rgba(58,214,202,.38) 50%, rgba(76,118,255,.1) 72%, transparent 90%); animation-delay: -4s; animation-duration: 19s; }
+@keyframes aurora-wave { from { transform: translate3d(-5vw, 0, 0) rotate(14deg) scaleX(.82); opacity: .42; } to { transform: translate3d(8vw, 4vh, 0) rotate(28deg) scaleX(1.25); opacity: .88; } }
+
+body.weather-scene-rain .sky-cloud-layer, body.weather-scene-storm .sky-cloud-layer { opacity: .72; filter: saturate(.65) brightness(.55); }
+body.weather-scene-rain .aurora-lights, body.weather-scene-storm .aurora-lights { opacity: .22; }
+body.weather-scene-night .sky-cloud-layer { opacity: .16; }
+body.weather-scene-night .aurora-lights { opacity: .78; }
+
+@media (max-width: 700px), (prefers-reduced-motion: reduce) {
+  .sky-cloud-layer { opacity: .2; }
+  .sky-cloud-layer i, .aurora-lights i { animation: none; }
+  .aurora-lights { opacity: .3; }
+  .sky-rain-layer { display: none; }
+}
+
+/* Original CSS scenery: a nod to illustrated weather dashboards without using artwork assets. */
+.weather-landscape { position: absolute; z-index: 0; inset: 0; overflow: hidden; pointer-events: none; isolation: isolate; }
+.weather-landscape > span { position: absolute; display: block; }
+.landscape-haze { inset: 35% 0 0; opacity: .7; background: linear-gradient(to bottom, transparent, rgba(255,255,255,.08)); }
+.landscape-mountain { bottom: 8%; width: 78%; height: 42%; border-radius: 62% 55% 0 0; background: rgba(10, 41, 73, .34); clip-path: polygon(0 100%, 10% 66%, 22% 77%, 45% 16%, 58% 65%, 73% 39%, 100% 100%); transform-origin: bottom; }
+.mountain-far { left: -10%; opacity: .6; transform: scale(1.1); }
+.mountain-near { right: -18%; bottom: -2%; background: rgba(5, 26, 48, .38); transform: scaleX(-1); }
+.landscape-ground { right: -8%; bottom: -7%; width: 110%; height: 22%; border-radius: 50% 50% 0 0; background: rgba(4, 38, 56, .48); transform: rotate(-4deg); }
+.landscape-orb { top: 14%; right: 11%; width: 64px; height: 64px; border-radius: 50%; opacity: .75; background: #fff6ca; box-shadow: 0 0 0 12px rgba(255,246,202,.1), 0 0 60px rgba(255,224,135,.55); animation: scene-orb 7s ease-in-out infinite; }
+.landscape-clouds .landscape-orb { opacity: .35; background: #e2e8f0; }
+.landscape-rain .landscape-orb, .landscape-storm .landscape-orb { opacity: .16; }
+.landscape-snow .landscape-ground { background: rgba(224,242,254,.38); }
+.landscape-snow .landscape-mountain { background: rgba(186,230,253,.28); }
+.landscape-storm .landscape-ground, .landscape-rain .landscape-ground { background: rgba(3,18,41,.6); }
+.landscape-storm .landscape-mountain, .landscape-rain .landscape-mountain { background: rgba(15,45,78,.48); }
+@keyframes scene-orb { 50% { transform: translateY(8px) scale(1.04); } }
+
+/* Forecast cards get the cheerful, compact rhythm of a weather strip. */
+.hour-card, .day-card { position: relative; overflow: hidden; }
+.hour-card::before, .day-card::before { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,.13), transparent 58%); content: ""; pointer-events: none; }
+.hour-card:nth-child(3n + 1), .day-card:nth-child(3n + 1) { background: rgba(56,189,248,.14); }
+.hour-card:nth-child(3n + 2), .day-card:nth-child(3n + 2) { background: rgba(129,140,248,.14); }
+.hour-card:nth-child(3n) { background: rgba(45,212,191,.12); }

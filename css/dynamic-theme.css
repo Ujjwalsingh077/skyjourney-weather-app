@@ -1,0 +1,25 @@
+/* Theme states are CSS-variable driven so layout remains unchanged. */
+body, .site-header, .panel, .card, .metric-tile, .hour-card, .day-card, .advice-card, .travel-score-card, .btn { transition: background 1.4s ease, background-color 1.4s ease, border-color 1.4s ease, box-shadow 1.4s ease, color .8s ease; }
+
+body[data-weather-theme$="-day"] .site-header, body[data-weather-theme$="-day"] .panel, body[data-weather-theme$="-day"] .card { background: linear-gradient(135deg, rgba(16, 67, 126, .62), rgba(55, 65, 142, .43)); }
+body[data-weather-theme^="sunny-"][data-weather-phase="day"] { background: radial-gradient(circle at 76% 11%, rgba(255,223,110,.54), transparent 20rem), linear-gradient(145deg, #1975c4, #56c9ee 52%, #7353d7); }
+body[data-weather-theme^="cloudy-"][data-weather-phase="day"] { background: radial-gradient(ellipse at 15% 5%, rgba(226,232,240,.24), transparent 35rem), linear-gradient(145deg, #355779, #536f91 58%, #59609c); }
+body[data-weather-theme^="fog-"] { background: linear-gradient(145deg, #485a6f, #718096 55%, #576b83); }
+body[data-weather-theme^="rain-"] { background: linear-gradient(145deg, #101d36, #1c4a76 57%, #193559); }
+body[data-weather-theme^="storm-"] { background: radial-gradient(ellipse at 70% 4%, rgba(167,139,250,.2), transparent 29rem), linear-gradient(145deg, #100f2e, #2a285d 55%, #102b55); }
+body[data-weather-theme^="snow-"] { background: radial-gradient(circle at 21% 7%, rgba(240,249,255,.48), transparent 27rem), linear-gradient(145deg, #426d93, #7ba7c8 55%, #526baf); }
+body[data-weather-phase="sunrise"], body[data-weather-phase="sunset"] { background: radial-gradient(circle at 76% 63%, rgba(255,205,91,.52), transparent 17rem), linear-gradient(145deg, #ff875f, #d85d93 48%, #5a3f94); }
+body[data-weather-phase="night"] { background: radial-gradient(circle at 74% 14%, rgba(165,180,252,.2), transparent 19rem), linear-gradient(145deg, #020617, #071a46 53%, #21114d); }
+
+body[data-weather-theme^="sunny-"] .landscape-orb { background: #fff6ba; box-shadow: 0 0 0 15px rgba(255,230,116,.16), 0 0 80px rgba(255,200,80,.72); }
+body[data-weather-phase="night"] .landscape-orb { top: 15%; right: 12%; background: #e0e7ff; box-shadow: inset -15px -6px 0 #9ca3d5, 0 0 0 12px rgba(224,231,255,.08), 0 0 58px rgba(165,180,252,.52); }
+body[data-weather-phase="sunrise"] .landscape-orb, body[data-weather-phase="sunset"] .landscape-orb { top: 51%; right: 16%; background: #ffd27d; box-shadow: 0 0 0 12px rgba(255,173,93,.14), 0 0 70px rgba(255,122,74,.6); }
+
+body[data-weather-theme^="fog-"] .sky-cloud-layer { opacity: .8; filter: grayscale(.35) blur(7px); }
+body[data-weather-theme^="fog-"] .aurora-lights { opacity: .12; }
+body[data-weather-theme^="snow-"] .sky-cloud-layer { opacity: .6; filter: brightness(1.15); }
+body[data-weather-theme^="snow-"] .panel, body[data-weather-theme^="snow-"] .card { border-color: rgba(224,242,254,.42); box-shadow: 0 18px 55px rgba(2,8,23,.25), inset 0 1px rgba(255,255,255,.3); }
+body[data-weather-phase="sunset"] .site-header, body[data-weather-phase="sunset"] .panel, body[data-weather-phase="sunset"] .card { background: linear-gradient(135deg, rgba(117,45,86,.68), rgba(110,51,112,.5)); }
+body[data-weather-phase="night"] .site-header, body[data-weather-phase="night"] .panel, body[data-weather-phase="night"] .card { background: linear-gradient(135deg, rgba(5,19,54,.78), rgba(24,20,73,.58)); }
+
+@media (prefers-reduced-motion: reduce) { body, .site-header, .panel, .card, .metric-tile, .hour-card, .day-card, .advice-card, .travel-score-card, .btn { transition: none; } }

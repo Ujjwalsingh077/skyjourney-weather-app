@@ -8,7 +8,7 @@ import {
   getRecents,
   toggleFavorite
 } from "./js/storage.js";
-import { initTheme, toggleTheme } from "./js/theme.js";
+import { initTheme } from "./js/theme.js";
 import {
   renderAirQuality,
   renderCityLists,
@@ -48,6 +48,13 @@ function setTodayDate() {
   ].join("-");
   elements.travelDateInput.value = localDate;
   elements.travelDateInput.min = localDate;
+  const lastForecastDate = new Date(today);
+  lastForecastDate.setDate(today.getDate() + 5);
+  elements.travelDateInput.max = [
+    lastForecastDate.getFullYear(),
+    String(lastForecastDate.getMonth() + 1).padStart(2, "0"),
+    String(lastForecastDate.getDate()).padStart(2, "0")
+  ].join("-");
   document.querySelector("#planner-date-label").textContent = today.toLocaleDateString(undefined, {
     weekday: "short",
     month: "short",
@@ -73,7 +80,7 @@ async function loadWeather(currentResult) {
 
   state.forecast = forecastResult.data;
   renderForecasts(state.forecast);
-  renderAirQuality(airResult.data, current);
+  renderAirQuality(airResult.data, current, airResult.isDemo);
   state.air = airResult.data;
   renderMap(current.city);
 
@@ -118,8 +125,7 @@ function bindEvents() {
   elements.locationBtn.addEventListener("click", loadCurrentLocation);
 
   elements.themeToggle.addEventListener("click", () => {
-    const theme = toggleTheme();
-    showToast(`${theme === "light" ? "Light" : "Dark"} mode enabled.`);
+    showToast("Auto weather theme is active.");
   });
 
   elements.addFavoriteBtn.addEventListener("click", () => {

@@ -1,13 +1,15 @@
 /**
  * Formats a Unix timestamp as local time.
  * @param {number} timestamp
+ * @param {number} timezoneOffset Offset from UTC in seconds for the selected city.
  * @returns {string}
  */
-export function formatTime(timestamp) {
+export function formatTime(timestamp, timezoneOffset = 0) {
   return new Intl.DateTimeFormat(undefined, {
     hour: "numeric",
-    minute: "2-digit"
-  }).format(new Date(timestamp * 1000));
+    minute: "2-digit",
+    timeZone: "UTC"
+  }).format(new Date((timestamp + timezoneOffset) * 1000));
 }
 
 /**

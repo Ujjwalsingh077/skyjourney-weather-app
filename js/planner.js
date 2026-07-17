@@ -62,12 +62,16 @@ const scoreRange = (value, idealMin, idealMax, hardMin, hardMax) => {
 };
 
 const rainChance = (item) => item?.rainProbability ?? (conditionHas(item, /rain|drizzle|thunder|storm/i) ? 0.8 : 0.08);
-const aqiScore = (aqi) => clamp(120 - (aqi || 1) * 20);
-const uvScore = (uvIndex) => scoreRange(uvIndex ?? 5, 2, 6, 0, 11);
+const aqiScore = (aqi) => {
+  const value = Number(aqi);
+  if (!Number.isFinite(value)) return 75;
+  return clamp(100 - Math.max(0, value - 25) * 0.42);
+};
+const uvScore = (uvIndex) => Number.isFinite(uvIndex) ? scoreRange(uvIndex, 2, 6, 0, 11) : 75;
 const scoreStars = (score) => Math.max(1, Math.round(score / 20));
 
 const getTargetForecast = (date, current, forecast) => {
-  const target = new Date(date);
+  const target = new Date(`${date}T12:00:00`);
   if (Number.isNaN(target.getTime()) || forecast.length === 0) {
     return forecast[0] ?? current;
   }
@@ -80,7 +84,7 @@ const getTargetForecast = (date, current, forecast) => {
 };
 
 const getForecastForDate = (date, forecast) => {
-  const target = new Date(date);
+  const target = new Date(`${date}T12:00:00`);
   if (Number.isNaN(target.getTime())) {
     return forecast.slice(0, 8);
   }
@@ -96,8 +100,8 @@ const explainScore = (item, air) => {
   if (item.temp >= 18 && item.temp <= 30) reasons.push("Pleasant temperature");
   if (item.humidity >= 30 && item.humidity <= 70) reasons.push("Comfortable humidity");
   if (rain < 0.25 && !conditionHas(item, /rain|drizzle|thunder|storm/i)) reasons.push("Low rain chance");
-  if ((air?.aqi ?? 1) <= 2) reasons.push("Good air quality");
-  if ((air?.uvIndex ?? 5) <= 6) reasons.push("Manageable UV index");
+  if ((air?.aqi ?? 999) <= 50) reasons.push("Good air quality");
+  if (Number.isFinite(air?.uvIndex) && air.uvIndex <= 6) reasons.push("Manageable UV index");
   if (item.wind <= 18) reasons.push("Light wind");
 
   return reasons.slice(0, 5);
@@ -212,12 +216,15 @@ export function calculateTravelRisk(current, air) {
     reasons.push("Reduced visibility");
   }
 
-  if ((air?.aqi ?? 1) >= 4) {
+  if ((air?.aqi ?? 0) > 150) {
     risk += 24;
-    reasons.push("Poor air quality");
+    reasons.push("Unhealthy air quality");
+  } else if ((air?.aqi ?? 0) > 100) {
+    risk += 12;
+    reasons.push("Air quality may affect sensitive travellers");
   }
 
-  if ((air?.uvIndex ?? 5) >= 8) {
+  if (Number.isFinite(air?.uvIndex) && air.uvIndex >= 8) {
     risk += 14;
     reasons.push("High UV index");
   }
@@ -293,8 +300,10 @@ function healthAdvice(air,temp){
 
 const tips=[];
 
-if(air?.aqi>=4)
-tips.push("Wear a mask outdoors.");
+if((air?.aqi ?? 0)>150)
+tips.push("Air quality is unhealthy: wear a well-fitting mask outdoors and reduce exertion.");
+else if((air?.aqi ?? 0)>100)
+tips.push("Air quality may affect sensitive groups: limit prolonged outdoor activity if needed.");
 
 if(temp>=35)
 tips.push("Drink plenty of water.");
@@ -334,27 +343,28 @@ risk.level==="Low"
  */
 export function planTrip({ destination, date, current, forecast, air }) {
   const closest = getTargetForecast(date, current, forecast);
-  const condition = closest.description || current.description;
-  const temp = closest.temp ?? current.temp;
+  const plannedWeather = { ...current, ...closest };
+  const condition = plannedWeather.description;
+  const temp = plannedWeather.temp;
   const rule = rules.find((item) => item.match.test(condition)) ?? rules[3];
   const warning = temp >= 35
     ? "High heat expected. Hydration and shade breaks are essential."
     : temp <= 5
       ? "Low temperatures expected. Prioritize warm layers."
       : "No severe temperature warning for the selected date.";
-      const risk = calculateTravelRisk(current, air);
+  const risk = calculateTravelRisk(plannedWeather, air);
 
 const clothes = clothingAdvice(temp);
 
 const health = healthAdvice(air, temp);
 
-const summary = generateSummary(destination, current, risk);
+const summary = generateSummary(destination, plannedWeather, risk);
 
   return {
     ...rule,
     advice: `${rule.advice} Expected around ${destination}: ${condition}, ${Math.round(temp)}°C.`,
     warning,
-    score: calculateTravelScore({ ...current, ...closest }, air),
+    score: calculateTravelScore(plannedWeather, air),
     bestTime: getBestDepartureWindow(date, forecast),
     risk,
   clothes,

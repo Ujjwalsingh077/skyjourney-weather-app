@@ -67,10 +67,16 @@ export function renderCurrentWeather(current, isDemo = false) {
   const weatherCard = document.querySelector("#current-weather");
   const mood = weatherMood(current.description);
   weatherCard.className = `current-weather card reveal weather-${mood}`;
+  weatherCard.dataset.weatherDescription = current.description;
+  weatherCard.dataset.weatherTimestamp = String(current.timestamp);
+  weatherCard.dataset.weatherSunrise = String(current.sunrise);
+  weatherCard.dataset.weatherSunset = String(current.sunset);
+  weatherCard.dataset.weatherTimezone = String(current.timezone ?? 0);
+  weatherCard.dataset.weatherDemo = String(isDemo);
   weatherCard.innerHTML = `
     ${renderWeatherAmbient(mood)}
     <div class="weather-main">
-      <span class="weather-eyebrow">${isDemo ? "Demo weather" : "Live weather"} · ${formatTime(current.timestamp)}</span>
+      <span class="weather-eyebrow">${isDemo ? "Demo weather" : "Live weather"} · ${formatTime(current.timestamp, current.timezone)}</span>
       <div>
         <div class="temperature-row">
           <img class="weather-icon" src="${weatherIcon(current.icon)}" alt="" />
@@ -89,8 +95,8 @@ export function renderCurrentWeather(current, isDemo = false) {
         ["Wind", `${current.wind} km/h`],
         ["Pressure", `${current.pressure} hPa`],
         ["Visibility", `${current.visibility} km`],
-        ["Sunrise", formatTime(current.sunrise)],
-        ["Sunset", formatTime(current.sunset)]
+        ["Sunrise", formatTime(current.sunrise, current.timezone)],
+        ["Sunset", formatTime(current.sunset, current.timezone)]
       ].map(([label, value]) => `<div class="stat"><span>${label}</span><strong>${value}</strong></div>`).join("")}
     </div>
   `;
@@ -127,15 +133,19 @@ export function renderForecasts(forecast) {
  * @param {object} air
  * @param {object} current
  */
-export function renderAirQuality(air, current) {
+export function renderAirQuality(air, current, isDemo = false) {
   document.querySelector("#aqi-label").textContent = air.label;
+  const warning = air.aqi > 100
+    ? `<div class="metric-tile aqi-warning"><span>Air quality warning</span><strong>${air.aqi > 150 ? "Avoid prolonged outdoor exertion" : "Sensitive groups should limit long outdoor activity"}</strong></div>`
+    : "";
   document.querySelector("#air-quality").innerHTML = `
     <div class="metric-tile"><span>AQI</span><strong>${air.aqi} · ${air.label}</strong></div>
-    <div class="metric-tile"><span>UV Index</span><strong>${air.uvIndex}</strong></div>
+    <div class="metric-tile"><span>Air source</span><strong>${isDemo ? "Demo data" : (air.source ?? "Live air data")}</strong></div>
     <div class="metric-tile"><span>Visibility</span><strong>${current.visibility} km</strong></div>
-    <div class="metric-tile"><span>PM2.5</span><strong>${Math.round(air.components.pm2_5 ?? 0)}</strong></div>
-    <div class="metric-tile"><span>PM10</span><strong>${Math.round(air.components.pm10 ?? 0)}</strong></div>
+    <div class="metric-tile"><span>PM2.5</span><strong>${Math.round(air.components.pm2_5 ?? 0)} µg/m³</strong></div>
+    <div class="metric-tile"><span>PM10</span><strong>${Math.round(air.components.pm10 ?? 0)} µg/m³</strong></div>
     <div class="metric-tile"><span>Pressure</span><strong>${current.pressure} hPa</strong></div>
+    ${warning}
   `;
 }
 
@@ -164,7 +174,9 @@ export function renderCityLists(favorites, recents, onSelect) {
  * @param {object} result
  */
 export function renderPlannerResult(result) {
-  document.querySelector("#planner-output").innerHTML = `
+  const output = document.querySelector("#planner-output");
+  output.closest(".planner-results-panel")?.classList.add("is-visible");
+  output.innerHTML = `
     <div class="travel-score-card">
       <h3>🌍 Travel Score</h3>
       <div class="travel-score-value">${result.score.score}/100</div>

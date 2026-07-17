@@ -1,4 +1,5 @@
 .trip-card {
+  align-self: start;
   display: flex;
   flex-direction: column;
   min-height: 420px;
@@ -20,9 +21,52 @@ label {
 
 .planner-output {
   display: grid;
-  gap: 0.8rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
 }
+
+.planner-results-panel {
+  display: none;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(22px);
+}
+
+.planner-results-panel.is-visible {
+  display: block;
+  animation: planner-results-reveal .5s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.planner-results-panel .section-heading { margin-bottom: 1rem; }
+.planner-results-panel .travel-score-card { grid-column: span 2; }
+
+@keyframes planner-results-reveal {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 640px) {
+  .planner-results-panel .travel-score-card { grid-column: auto; }
+}
+
+.travel-score-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(56, 189, 248, .18), rgba(99, 102, 241, .12));
+}
+
+.travel-score-card h3 { margin: 0; }
+.travel-score-value { margin-top: .35rem; font-size: 2.25rem; font-weight: 800; line-height: 1; }
+.travel-score-label { margin-top: .35rem; color: var(--secondary); font-weight: 800; }
+.travel-stars { margin: .35rem 0; letter-spacing: .12em; }
+.travel-score-card small { color: var(--muted); }
 
 .advice-card {
   border: 1px solid var(--border);
